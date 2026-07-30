@@ -5,23 +5,12 @@ import { appState } from '../../app/state.js';
 export function renderAuthView(root, onStartDemo = () => {}) {
   root.innerHTML = `
     <main class="auth-page">
-      <nav class="auth-nav" aria-label="Welcome navigation">
-        <strong class="auth-logo">Bizmate AI</strong>
-        <div class="auth-nav-links">
-          <a href="#home">Home</a>
-          <a href="#about">About</a>
-          <a href="#services">Services</a>
-          <a href="#contact">Contact</a>
-          <button class="auth-login-link" type="button">Login</button>
-        </div>
-      </nav>
-      <div class="forest-layer forest-layer-back"></div>
-      <div class="forest-layer forest-layer-mid"></div>
-      <div class="forest-layer forest-layer-front"></div>
-      <div class="deer-silhouette" aria-hidden="true"></div>
       <section class="auth-card">
-        <button class="auth-close-button" type="button" aria-label="Close">x</button>
-        <h1 class="brand" data-auth-title>Login</h1>
+        <div class="auth-brand">
+          <h1>Bizmate AI</h1>
+          <p>Small business command center</p>
+        </div>
+        <h2 data-auth-title>Login</h2>
 
         <form class="form" data-auth-form>
           <label class="field" data-name-field hidden>
