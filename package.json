@@ -1,0 +1,17 @@
+{
+  "name": "bizmate-ai-web",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "vite --host 127.0.0.1 --port 5173 --open /",
+    "dev": "vite --host 127.0.0.1 --port 5173 --open /",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1 --port 4173 --open /"
+  },
+  "dependencies": {
+    "firebase": "^12.0.0",
+    "vite": "^7.0.0"
+  },
+  "devDependencies": {}
+}
