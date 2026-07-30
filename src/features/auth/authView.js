@@ -5,9 +5,23 @@ import { appState } from '../../app/state.js';
 export function renderAuthView(root, onStartDemo = () => {}) {
   root.innerHTML = `
     <main class="auth-page">
+      <nav class="auth-nav" aria-label="Welcome navigation">
+        <strong class="auth-logo">Bizmate AI</strong>
+        <div class="auth-nav-links">
+          <a href="#home">Home</a>
+          <a href="#about">About</a>
+          <a href="#services">Services</a>
+          <a href="#contact">Contact</a>
+          <button class="auth-login-link" type="button">Login</button>
+        </div>
+      </nav>
+      <div class="forest-layer forest-layer-back"></div>
+      <div class="forest-layer forest-layer-mid"></div>
+      <div class="forest-layer forest-layer-front"></div>
+      <div class="deer-silhouette" aria-hidden="true"></div>
       <section class="auth-card">
-        <h1 class="brand">Bizmate AI</h1>
-        <p class="subtitle">Manage your shop, sales, expenses, staff, and inventory.</p>
+        <button class="auth-close-button" type="button" aria-label="Close">x</button>
+        <h1 class="brand" data-auth-title>Login</h1>
 
         <form class="form" data-auth-form>
           <label class="field" data-name-field hidden>
@@ -26,6 +40,13 @@ export function renderAuthView(root, onStartDemo = () => {}) {
             <span>Password</span>
             <input name="password" type="password" autocomplete="current-password" minlength="8" required />
           </label>
+          <div class="auth-options">
+            <label>
+              <input type="checkbox" checked />
+              <span>Remember me</span>
+            </label>
+            <button class="text-button" type="button">Forgot Password?</button>
+          </div>
           <p class="error" data-error></p>
           <button class="primary-button" type="submit">Sign in</button>
         </form>
@@ -49,6 +70,7 @@ export function renderAuthView(root, onStartDemo = () => {}) {
   const phoneField = root.querySelector('[data-phone-field]');
   const submitButton = form.querySelector('button[type="submit"]');
   const toggleButton = root.querySelector('[data-toggle-auth]');
+  const authTitle = root.querySelector('[data-auth-title]');
   const themeButton = root.querySelector('[data-auth-theme-toggle]');
   const demoButton = root.querySelector('[data-start-demo]');
 
@@ -56,6 +78,7 @@ export function renderAuthView(root, onStartDemo = () => {}) {
     isRegistering = !isRegistering;
     nameField.hidden = !isRegistering;
     phoneField.hidden = !isRegistering;
+    authTitle.textContent = isRegistering ? 'Register' : 'Login';
     submitButton.textContent = isRegistering ? 'Create account' : 'Sign in';
     toggleButton.textContent = isRegistering
       ? 'Already have an account? Sign in'
