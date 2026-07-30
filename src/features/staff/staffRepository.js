@@ -1,9 +1,13 @@
 import {
   addDoc,
   collection,
+  deleteDoc,
+  doc,
+  getDocs,
   onSnapshot,
   query,
   serverTimestamp,
+  writeBatch,
   where,
 } from 'firebase/firestore';
 import { getFirestoreDb } from '../../core/firebase/firebaseClient.js';
@@ -45,4 +49,21 @@ export async function addStaffMember({
     joinedAt: serverTimestamp(),
     isActive: true,
   });
+}
+
+export async function removeStaffMember(staffId) {
+  const db = getFirestoreDb();
+  const attendanceSnapshot = await getDocs(
+    query(collection(db, 'attendance'), where('staffId', '==', staffId)),
+  );
+
+  if (!attendanceSnapshot.empty) {
+    const batch = writeBatch(db);
+    attendanceSnapshot.docs.forEach((documentSnapshot) => {
+      batch.delete(documentSnapshot.ref);
+    });
+    await batch.commit();
+  }
+
+  return deleteDoc(doc(db, 'staff', staffId));
 }

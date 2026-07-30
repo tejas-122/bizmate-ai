@@ -1,6 +1,8 @@
 import {
   addDoc,
   collection,
+  deleteDoc,
+  doc,
   onSnapshot,
   query,
   serverTimestamp,
@@ -52,4 +54,8 @@ export async function recordSale({
     notes: notes?.trim() || null,
     soldAt: serverTimestamp(),
   });
+}
+
+export function removeSale(saleId) {
+  return deleteDoc(doc(getFirestoreDb(), 'sales', saleId));
 }

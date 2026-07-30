@@ -70,6 +70,14 @@ function staffRow(staffMember) {
           >
             Absent
           </button>
+          <button
+            class="danger-button compact-button"
+            type="button"
+            data-remove-record="staff"
+            data-record-id="${staffMember.id}"
+          >
+            Remove
+          </button>
         </div>
       </div>
     </article>

@@ -1,6 +1,8 @@
 import {
   addDoc,
   collection,
+  deleteDoc,
+  doc,
   onSnapshot,
   query,
   serverTimestamp,
@@ -36,4 +38,8 @@ export async function recordExpense({ shopId, category, amount, vendor, notes })
     notes: notes?.trim() || null,
     spentAt: serverTimestamp(),
   });
+}
+
+export function removeExpense(expenseId) {
+  return deleteDoc(doc(getFirestoreDb(), 'expenses', expenseId));
 }

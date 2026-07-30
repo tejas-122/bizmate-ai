@@ -4,19 +4,28 @@ import { loadCurrentUserProfile, logout, watchAuthState } from '../features/auth
 import { formValues, formatMoney } from './dom.js';
 import { dashboardView } from '../features/dashboard/dashboardView.js';
 import { expensesView } from '../features/expenses/expensesView.js';
-import { recordExpense, watchExpenses } from '../features/expenses/expenseRepository.js';
+import {
+  recordExpense,
+  removeExpense,
+  watchExpenses,
+} from '../features/expenses/expenseRepository.js';
 import { inventoryView } from '../features/inventory/inventoryView.js';
 import {
+  removeInventoryItem,
   saveInventoryItem,
   watchInventory,
 } from '../features/inventory/inventoryRepository.js';
 import { bindNavigation, navigationView } from '../features/navigation/navigationView.js';
 import { salesView } from '../features/sales/salesView.js';
-import { recordSale, watchSales } from '../features/sales/salesRepository.js';
+import { recordSale, removeSale, watchSales } from '../features/sales/salesRepository.js';
 import { createShop, removeShop, watchOwnedShops } from '../features/shops/shopRepository.js';
 import { staffView } from '../features/staff/staffView.js';
 import { markAttendance, watchAttendance } from '../features/staff/attendanceRepository.js';
-import { addStaffMember, watchStaff } from '../features/staff/staffRepository.js';
+import {
+  addStaffMember,
+  removeStaffMember,
+  watchStaff,
+} from '../features/staff/staffRepository.js';
 import {
   activeShop,
   appState,
@@ -483,6 +492,31 @@ function bindShellControls(root) {
       renderApp(root);
     });
   });
+  root.querySelectorAll('[data-remove-record]').forEach((button) => {
+    button.addEventListener('click', async () => {
+      const collectionName = button.dataset.removeRecord;
+      const recordId = button.dataset.recordId;
+      const recordLabel = recordDisplayName(collectionName, recordId);
+      const confirmed = window.confirm(
+        `Remove "${recordLabel}" from ${recordCollectionLabel(collectionName)}? This cannot be undone.`,
+      );
+      if (!confirmed) return;
+
+      button.disabled = true;
+      try {
+        if (appState.isDemoMode) {
+          removeDemoRecord(collectionName, recordId);
+          saveDemoData();
+          renderApp(root);
+        } else {
+          await removeRecord(collectionName, recordId);
+        }
+      } catch (error) {
+        window.alert(error.message ?? String(error));
+        button.disabled = false;
+      }
+    });
+  });
   root.querySelector('[data-close-bill]')?.addEventListener('click', () => {
     appState.activeBill = null;
     renderApp(root);
@@ -804,6 +838,64 @@ function removeDemoShop(shopId) {
   appState.attendance = appState.attendance.filter((item) => item.shopId !== shopId);
   appState.inventory = appState.inventory.filter((item) => item.shopId !== shopId);
   appState.activeShopId = appState.shops[0]?.id ?? null;
+}
+
+function removeDemoRecord(collectionName, recordId) {
+  if (!collectionName || !recordId || !Array.isArray(appState[collectionName])) {
+    throw new Error('Could not find that record.');
+  }
+
+  appState[collectionName] = appState[collectionName].filter(
+    (item) => item.id !== recordId,
+  );
+
+  if (collectionName === 'staff') {
+    appState.attendance = appState.attendance.filter(
+      (item) => item.staffId !== recordId,
+    );
+  }
+
+  if (collectionName === 'sales' && appState.activeBill?.id === recordId) {
+    appState.activeBill = null;
+  }
+}
+
+function removeRecord(collectionName, recordId) {
+  const removers = {
+    sales: removeSale,
+    expenses: removeExpense,
+    inventory: removeInventoryItem,
+    staff: removeStaffMember,
+  };
+
+  const remover = removers[collectionName];
+  if (!remover) {
+    throw new Error('Could not remove that record.');
+  }
+
+  return remover(recordId);
+}
+
+function recordCollectionLabel(collectionName) {
+  return (
+    {
+      sales: 'sales',
+      expenses: 'expenses',
+      inventory: 'stock',
+      staff: 'staff',
+    }[collectionName] ?? 'records'
+  );
+}
+
+function recordDisplayName(collectionName, recordId) {
+  const item = appState[collectionName]?.find((record) => record.id === recordId);
+
+  return {
+    sales: item?.invoiceNumber,
+    expenses: item?.category,
+    inventory: item?.name,
+    staff: item?.fullName,
+  }[collectionName] ?? 'this record';
 }
 
 function markDemoAttendance({ shopId, staffId, staffName, status }) {

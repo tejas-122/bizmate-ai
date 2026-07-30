@@ -33,6 +33,14 @@ export function inventoryView() {
                         <span class="pill ${item.reorderLevel != null && item.quantity <= item.reorderLevel ? 'danger-pill' : ''}">
                           ${item.reorderLevel != null && item.quantity <= item.reorderLevel ? 'Reorder' : 'In stock'}
                         </span>
+                        <button
+                          class="danger-button compact-button"
+                          type="button"
+                          data-remove-record="inventory"
+                          data-record-id="${item.id}"
+                        >
+                          Remove
+                        </button>
                       </div>
                     </article>
                   `,

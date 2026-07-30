@@ -27,7 +27,17 @@ export function salesView() {
         </div>
         <div class="right-stack">
           <strong>${formatMoney(sale.amount)}</strong>
-          <button class="ghost-button compact-button" type="button" data-bill-id="${sale.id}">Bill</button>
+          <div class="row-actions">
+            <button class="ghost-button compact-button" type="button" data-bill-id="${sale.id}">Bill</button>
+            <button
+              class="danger-button compact-button"
+              type="button"
+              data-remove-record="sales"
+              data-record-id="${sale.id}"
+            >
+              Remove
+            </button>
+          </div>
         </div>
       </article>
     `,

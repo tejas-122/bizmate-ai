@@ -28,7 +28,17 @@ export function expensesView() {
                         <div class="muted">${expense.vendor ?? 'Business expense'}</div>
                         <small>${formatDate(expense.spentAt)}</small>
                       </div>
-                      <strong class="danger-text">${formatMoney(expense.amount)}</strong>
+                      <div class="right-stack">
+                        <strong class="danger-text">${formatMoney(expense.amount)}</strong>
+                        <button
+                          class="danger-button compact-button"
+                          type="button"
+                          data-remove-record="expenses"
+                          data-record-id="${expense.id}"
+                        >
+                          Remove
+                        </button>
+                      </div>
                     </article>
                   `,
                 )

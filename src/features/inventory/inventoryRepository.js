@@ -1,6 +1,8 @@
 import {
   addDoc,
   collection,
+  deleteDoc,
+  doc,
   onSnapshot,
   query,
   serverTimestamp,
@@ -46,4 +48,8 @@ export async function saveInventoryItem({
     reorderLevel: reorderLevel ? Number(reorderLevel) : null,
     updatedAt: serverTimestamp(),
   });
+}
+
+export function removeInventoryItem(itemId) {
+  return deleteDoc(doc(getFirestoreDb(), 'inventory', itemId));
 }
